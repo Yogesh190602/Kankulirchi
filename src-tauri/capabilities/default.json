@@ -1,0 +1,22 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Permissions for the main window.",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "dialog:allow-open",
+    "dialog:allow-message",
+    {
+      "identifier": "opener:allow-open-url",
+      "allow": [
+        { "url": "https://wallhaven.cc/*" },
+        { "url": "https://www.pexels.com/*" },
+        { "url": "https://unsplash.com/*" },
+        { "url": "https://commons.wikimedia.org/*" },
+        { "url": "https://creativecommons.org/*" },
+        { "url": "https://www.gnu.org/*" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,125 @@
+@import "tailwindcss";
+
+/*
+ * Kankulirchi ("coolness for the eyes"): a deep, cool palette that lets
+ * wallpapers carry the color. Sea glass is the only accent and marks actions
+ * and live state.
+ */
+@theme {
+  --font-sans: "Bricolage Grotesque Variable", "Cantarell", system-ui, sans-serif;
+
+  --color-canvas: #0f1820;
+  --color-surface: #16222b;
+  --color-raised: #1e2c37;
+  --color-line: #2a3b48;
+  --color-fg: #dce6ea;
+  --color-muted: #8fa3ae;
+  --color-accent: #8ed6c4;
+  --color-accent-strong: #aee6d8;
+  --color-on-accent: #0f1820;
+  --color-danger: #f0a08a;
+
+  --radius-tile: 10px;
+  --radius-panel: 14px;
+
+  --text-display: 3rem;
+  --text-display--line-height: 1.05;
+  --text-title: 2.25rem;
+  --text-title--line-height: 1.1;
+
+  --animate-fade-in: fade-in 1.2s ease-out both;
+  --animate-rise: rise 180ms ease-out both;
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+/* Condensed width for display type; Bricolage has a width axis. */
+@utility font-condensed {
+  font-stretch: 82%;
+  letter-spacing: -0.015em;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    user-select: none;
+  }
+
+  input,
+  textarea,
+  [data-selectable] {
+    user-select: text;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--color-accent) 35%, transparent);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  dialog::backdrop {
+    background: rgb(5 9 12 / 0.78);
+  }
+
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-line);
+    border: 3px solid transparent;
+    border-radius: 999px;
+    background-clip: content-box;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
