@@ -1,0 +1,65 @@
+name: Release
+
+# Pushing a version tag, such as v0.1.0, checks the code, builds the Linux
+# packages (AppImage, .deb and .rpm) and publishes them as a GitHub release.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    # The oldest supported Ubuntu, so the packages run on as many systems as
+    # possible.
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install system libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential file libssl-dev libwebkit2gtk-4.1-dev \
+            librsvg2-dev libxdo-dev libayatana-appindicator3-dev patchelf
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - run: npm ci
+
+      - name: Check
+        run: |
+          npm run typecheck
+          npx eslint src
+          cargo test --manifest-path src-tauri/Cargo.toml --lib
+
+      - name: Build and publish
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: Kankulirchi ${{ github.ref_name }}
+          releaseDraft: false
+          prerelease: false
+          releaseBody: |
+            Search, collect and rotate GNOME wallpapers from Wallhaven, Unsplash, Pexels and Wikimedia Commons.
+
+            **Install** (64-bit Linux with GNOME):
+
+            | Package | For | How |
+            | --- | --- | --- |
+            | `.AppImage` | Any distribution | Download, then `chmod +x Kankulirchi_*.AppImage` and run it |
+            | `.deb` | Ubuntu 22.04+, Debian 12+, Linux Mint, Pop!_OS | `sudo apt install ./Kankulirchi_*_amd64.deb` |
+            | `.rpm` | Fedora, openSUSE | `sudo dnf install ./Kankulirchi-*.x86_64.rpm` |
+
+            Wallhaven and Wikimedia Commons work right away; Unsplash and Pexels need a free API key in Settings. See the [README](https://github.com/Yogesh190602/Kankulirchi#readme) for everything else.

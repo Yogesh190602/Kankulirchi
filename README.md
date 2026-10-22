@@ -10,6 +10,27 @@ The original product specification is in [`docs/`](docs/); see
 [Implementation notes](#implementation-notes) for where the app differs
 from it.
 
+## Download
+
+Ready-built packages for 64-bit Linux are on the
+[Releases page](https://github.com/Yogesh190602/Kankulirchi/releases/latest).
+Kankulirchi needs a GNOME desktop.
+
+| Package | For | Install |
+| --- | --- | --- |
+| `.AppImage` | Any distribution | Download, then `chmod +x Kankulirchi_*.AppImage` and run it |
+| `.deb` | Ubuntu 22.04 or later, Debian 12 or later, Linux Mint, Pop!_OS | `sudo apt install ./Kankulirchi_*_amd64.deb` |
+| `.rpm` | Fedora, openSUSE | `sudo dnf install ./Kankulirchi-*.x86_64.rpm` |
+
+The `.deb` and `.rpm` add Kankulirchi to the app grid and a `kankulirchi`
+command. An AppImage is a single file you run where it is; keep it in one
+place, because **Start at login** remembers where it is. On Arch Linux, use
+the AppImage or [build from source](#building-and-installing). Use either a
+package or `./install.sh`, not both, or the app grid shows Kankulirchi twice.
+
+Releases are built by GitHub Actions (`.github/workflows/release.yml`)
+whenever a version tag such as `v0.1.0` is pushed.
+
 ## Features
 
 | Feature | Where |

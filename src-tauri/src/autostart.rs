@@ -5,6 +5,7 @@
 //! that starts it in the background. The entry itself is the setting, so
 //! removing it in another tool, such as GNOME Tweaks, turns the setting off.
 
+use std::ffi::OsString;
 use std::fs;
 use std::io::ErrorKind;
 use std::path::{Path, PathBuf};
@@ -41,15 +42,24 @@ pub fn disable(config_dir: &Path) -> AppResult<()> {
     }
 }
 
-/// The program that is running. Linux appends " (deleted)" to its path once
-/// the file has been replaced, as reinstalling Kankulirchi does, so the
-/// suffix is dropped to name the new file at the same place.
+/// The program to start at login: the one that is running.
 pub fn current_executable() -> AppResult<PathBuf> {
-    let path = std::env::current_exe()?;
-    Ok(match path.to_str().and_then(|text| text.strip_suffix(" (deleted)")) {
+    Ok(program_to_start(std::env::var_os("APPIMAGE"), std::env::current_exe()?))
+}
+
+/// An AppImage runs from a temporary folder that changes at every launch,
+/// so the AppImage file itself, whose path its runtime puts in `APPIMAGE`,
+/// is started instead. Otherwise it is the running program; Linux appends
+/// " (deleted)" to its path once the file has been replaced, as reinstalling
+/// does, so the suffix is dropped to name the new file at the same place.
+fn program_to_start(appimage: Option<OsString>, running: PathBuf) -> PathBuf {
+    if let Some(appimage) = appimage.map(PathBuf::from).filter(|path| path.is_absolute()) {
+        return appimage;
+    }
+    match running.to_str().and_then(|text| text.strip_suffix(" (deleted)")) {
         Some(original) => PathBuf::from(original),
-        None => path,
-    })
+        None => running,
+    }
 }
 
 fn desktop_entry(executable: &Path) -> AppResult<String> {
@@ -109,6 +119,22 @@ mod tests {
         assert!(!is_enabled(config_dir.path()));
         // Turning it off twice is fine.
         disable(config_dir.path()).unwrap();
+    }
+
+    #[test]
+    fn appimages_start_the_appimage_file() {
+        let mounted = PathBuf::from("/tmp/.mount_KankulXyZ/usr/bin/kankulirchi");
+        let appimage = Some(OsString::from("/home/me/Apps/Kankulirchi_0.1.0_amd64.AppImage"));
+        assert_eq!(
+            program_to_start(appimage, mounted.clone()),
+            PathBuf::from("/home/me/Apps/Kankulirchi_0.1.0_amd64.AppImage")
+        );
+        assert_eq!(program_to_start(Some(OsString::from("relative.AppImage")), mounted.clone()), mounted);
+        assert_eq!(program_to_start(None, mounted.clone()), mounted);
+        assert_eq!(
+            program_to_start(None, PathBuf::from("/usr/bin/kankulirchi (deleted)")),
+            PathBuf::from("/usr/bin/kankulirchi")
+        );
     }
 
     #[test]

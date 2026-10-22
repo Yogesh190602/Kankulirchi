@@ -42,7 +42,7 @@
     "targets": ["appimage", "deb", "rpm"],
     "category": "Utility",
     "shortDescription": "Search, collect and rotate GNOME wallpapers",
-    "longDescription": "Kankulirchi searches Wallhaven and Pexels for wallpapers, keeps them in collections and favorites, caches them locally and rotates them on the GNOME desktop.",
+    "longDescription": "Kankulirchi searches Wallhaven, Unsplash, Pexels and Wikimedia Commons for wallpapers, keeps them in collections and favorites, caches them locally and rotates them on the GNOME desktop.",
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
