@@ -12,9 +12,31 @@ from it.
 
 ## Download
 
-Ready-built packages for 64-bit Linux are on the
-[Releases page](https://github.com/Yogesh190602/Kankulirchi/releases/latest).
-Kankulirchi needs a GNOME desktop.
+The quickest way: paste this into a terminal. It downloads the latest
+release and sets everything up, with nothing else to install and no password:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/Yogesh190602/Kankulirchi/main/get.sh | sh
+```
+
+On systems without `curl`, use
+`wget -qO- https://raw.githubusercontent.com/Yogesh190602/Kankulirchi/main/get.sh | sh`.
+Then start Kankulirchi from the app grid, or by typing `kankulirchi`.
+Run the same command again to update to the newest release. To remove
+Kankulirchi (your collections and settings are kept):
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/Yogesh190602/Kankulirchi/main/get.sh | sh -s -- --uninstall
+```
+
+[`get.sh`](get.sh) installs the release's AppImage, which carries everything
+Kankulirchi needs, into `~/.local/lib/kankulirchi`, with a `kankulirchi`
+command in `~/.local/bin` and an app grid entry. On the rare system without
+FUSE, the AppImage unpacks itself each time instead of being mounted.
+Kankulirchi needs 64-bit Linux and a GNOME desktop.
+
+The packages are also on the
+[Releases page](https://github.com/Yogesh190602/Kankulirchi/releases/latest):
 
 | Package | For | Install |
 | --- | --- | --- |
@@ -22,11 +44,11 @@ Kankulirchi needs a GNOME desktop.
 | `.deb` | Ubuntu 22.04 or later, Debian 12 or later, Linux Mint, Pop!_OS | `sudo apt install ./Kankulirchi_*_amd64.deb` |
 | `.rpm` | Fedora, openSUSE | `sudo dnf install ./Kankulirchi-*.x86_64.rpm` |
 
-The `.deb` and `.rpm` add Kankulirchi to the app grid and a `kankulirchi`
-command. An AppImage is a single file you run where it is; keep it in one
-place, because **Start at login** remembers where it is. On Arch Linux, use
-the AppImage or [build from source](#building-and-installing). Use either a
-package or `./install.sh`, not both, or the app grid shows Kankulirchi twice.
+An AppImage run by hand stays where you saved it; keep it in one place,
+because **Start at login** remembers where it is. Install Kankulirchi one way
+only: `get.sh` and `./install.sh` share the same place and replace each other,
+but a `.deb` or `.rpm` next to either would show Kankulirchi twice in the app
+grid.
 
 Releases are built by GitHub Actions (`.github/workflows/release.yml`)
 whenever a version tag such as `v0.1.0` is pushed.
